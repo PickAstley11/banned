@@ -1,0 +1,58 @@
+name: Build iOS Tweak
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            make \
+            clang \
+            lld \
+            llvm \
+            git \
+            curl \
+            zip \
+            unzip \
+            perl
+
+      - name: Clone Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+
+      - name: Set up Theos
+        run: |
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+      - name: Download iPhoneOS SDK
+        run: |
+          mkdir -p $HOME/theos/sdks
+          curl -L \
+            https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz \
+            -o sdk.tar.xz
+          tar -xf sdk.tar.xz -C $HOME/theos/sdks
+
+      - name: Build tweak
+        run: |
+          export THEOS=$HOME/theos
+          make package FINALPACKAGE=1
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: packages/*.deb
