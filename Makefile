@@ -10,6 +10,8 @@ TWEAK_NAME := banned
 
 banned_FILES := Tweak.x
 
+banned_FRAMEWORKS := UIKit Foundation
+
 banned_CFLAGS := -fobjc-arc
 banned_CFLAGS += -Wno-error=deprecated-declarations
 
