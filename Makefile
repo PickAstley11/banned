@@ -10,4 +10,4 @@ TWEAK_NAME = banned
 banned_FILES = Tweak.x
 banned_CFLAGS = -fobjc-arc
 
-include $(THEOS_MAKE_PATH)/tweak.mk
+include $(THEOS)/makefiles/tweak.mk
